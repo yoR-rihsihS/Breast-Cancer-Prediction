@@ -24,82 +24,61 @@ print(dataset.iloc[:,1].values)
 print()
 
 # plt.figure(figsize=(20,20))
-# sns.heatmap(dataset.corr(), annot = True)
+# sns.heatmap(dataset.corr(), annot = True, fmt='.0%')
 # plt.show()
 
 x = dataset.iloc[:,2:-1].values
 y = dataset.iloc[:,1].values
 # print(x)
+# print()
 # print(y)
+# print()
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
-
 
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
 
+
 #logistic regression model
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report , confusion_matrix , accuracy_score
 logistic_model = LogisticRegression(random_state = 0)
 logistic_model.fit(x_train, y_train)
+
 y_predict = logistic_model.predict(x_test)
 cm = confusion_matrix(y_test,y_predict)
 
+print('Logistic Regression Model :')
 print(classification_report(y_test,y_predict))
-print('Acc :', accuracy_score(y_test,logistic_model.predict(x_test)))
+print('Accuracy :', accuracy_score(y_test,logistic_model.predict(x_test)))
 print()
 
 
 
 #K- nearest neighbours model
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report , confusion_matrix
-knn_model = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
-knn_model.fit(x_train, y_train)
-y_predict =knn_model.predict(x_test)
-cm = confusion_matrix(y_test,y_predict)
-
 from sklearn import metrics
-print(classification_report(y_test,y_predict))
 
 Ks = 10
 mean_acc = np.zeros((Ks-1))
-std_acc = np.zeros((Ks-1))
-ConfustionMx = []
-for n in range(1,Ks):
-    
-    #Train Model and Predict  
-    neigh = KNeighborsClassifier(n_neighbors = n).fit(x_train,y_train)
-    yhat=neigh.predict(x_test)
-    mean_acc[n-1] = metrics.accuracy_score(y_test, yhat)
+classificationRpt = []
 
-    std_acc[n-1]=np.std(yhat==y_test)/np.sqrt(yhat.shape[0])
-print( "The best accuracy was with", mean_acc.max(), "with k=", mean_acc.argmax()+1)
+for n in range(1,Ks): 
+    knn_model = KNeighborsClassifier(n_neighbors = n).fit(x_train,y_train)
+    y_predict = knn_model.predict(x_test)
+    mean_acc[n-1] = metrics.accuracy_score(y_test, y_predict)
+
+    # print(metrics.classification_report(y_test,y_predict))
+    classificationRpt.append(metrics.classification_report(y_test,y_predict))
+
+print('KNN Model :')
+print(classificationRpt[mean_acc.argmax()])
+print("The best accuracy was", mean_acc.max(), "with k=", mean_acc.argmax()+1)
 
 
 
 # #Using SVM Model
-# from sklearn.svm import SVC
-# from sklearn.metrics import classification_report , confusion_matrix
-# from sklearn.svm import SVC
-# svm_model = SVC(kernel = 'linear', random_state = 0)
-# svm_model.fit(x_train, y_train)
-# y_predict =svm_model.predict(x_test)
-# cm = confusion_matrix(y_test,y_predict)
-
-# # print(classification_report(y_test,y_predict))
-
-# #model improvisation
-# min_train =x_train.min()
-# range_train =(x_train - min_train).max()
-# x_train_scaled =(x_train-min_train)/range_train
-
-# from sklearn.metrics import f1_score
-# f1_score(y_test, yhat, average='weighted') 
-
-# from sklearn.metrics import jaccard_similarity_score
-# jaccard_similarity_score(y_test, yhat)
