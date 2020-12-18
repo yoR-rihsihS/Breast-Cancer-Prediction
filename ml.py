@@ -4,6 +4,8 @@ import pandas as pd
 import seaborn as sns
 
 dataset = pd.read_csv('data.csv')
+print('Dataset dimensions :',dataset.shape)
+print()
 print(dataset.head(10))
 print()
 print(dataset.isna().sum())
@@ -45,16 +47,18 @@ x_test = sc.transform(x_test)
 
 #logistic regression model
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report , confusion_matrix , accuracy_score
+from sklearn import metrics
 logistic_model = LogisticRegression(random_state = 0)
 logistic_model.fit(x_train, y_train)
 
 y_predict = logistic_model.predict(x_test)
-cm = confusion_matrix(y_test,y_predict)
+# cm = metrics.confusion_matrix(y_test,y_predict)
 
 print('Logistic Regression Model :')
-print(classification_report(y_test,y_predict))
-print('Accuracy :', accuracy_score(y_test,logistic_model.predict(x_test)))
+print()
+print(metrics.confusion_matrix(y_test,y_predict))
+print(metrics.classification_report(y_test,y_predict))
+print('Accuracy :', metrics.accuracy_score(y_test,y_predict))
 print()
 
 
@@ -65,6 +69,7 @@ from sklearn import metrics
 
 Ks = 10
 mean_acc = np.zeros((Ks-1))
+confusionMat = []
 classificationRpt = []
 
 for n in range(1,Ks): 
@@ -72,13 +77,82 @@ for n in range(1,Ks):
     y_predict = knn_model.predict(x_test)
     mean_acc[n-1] = metrics.accuracy_score(y_test, y_predict)
 
-    # print(metrics.classification_report(y_test,y_predict))
+    print(metrics.accuracy_score(y_test, y_predict))
+    print(metrics.confusion_matrix(y_test,y_predict))
+    confusionMat.append(metrics.confusion_matrix(y_test,y_predict))
+    print(metrics.classification_report(y_test,y_predict))
     classificationRpt.append(metrics.classification_report(y_test,y_predict))
 
 print('KNN Model :')
+print()
+print(confusionMat[mean_acc.argmax()])
 print(classificationRpt[mean_acc.argmax()])
 print("The best accuracy was", mean_acc.max(), "with k=", mean_acc.argmax()+1)
 
 
 
-# #Using SVM Model
+#Using SVC linear
+from sklearn.svm import SVC
+from sklearn import metrics
+svc_lin = SVC(kernel = 'linear', random_state = 0)
+svc_lin.fit(x_train, y_train)
+
+y_predict = svc_lin.predict(x_test)
+
+print('SVM Linear :')
+print()
+print(metrics.confusion_matrix(y_test,y_predict))
+print(metrics.classification_report(y_test,y_predict))
+print('Accuracy :', metrics.accuracy_score(y_test,y_predict))
+print()
+
+
+
+#Using SVC rbf
+from sklearn.svm import SVC
+from sklearn import metrics
+svc_rbf = SVC(kernel = 'rbf', random_state = 0)
+svc_rbf.fit(x_train, y_train)
+
+y_predict = svc_rbf.predict(x_test)
+
+print('SVM RBF :')
+print()
+print(metrics.confusion_matrix(y_test,y_predict))
+print(metrics.classification_report(y_test,y_predict))
+print('Accuracy :', metrics.accuracy_score(y_test,y_predict))
+print()
+
+
+
+#Using DecisionTreeClassifier 
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import metrics
+tree = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
+tree.fit(x_train, y_train)
+
+y_predict = tree.predict(x_test)
+
+print('Decision Tree :')
+print()
+print(metrics.confusion_matrix(y_test,y_predict))
+print(metrics.classification_report(y_test,y_predict))
+print('Accuracy :', metrics.accuracy_score(y_test,y_predict))
+print()
+
+
+
+#Using RandomForestClassifier method of ensemble class to use Random Forest Classification algorithm
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+forest = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
+forest.fit(x_train, y_train)
+
+y_predict = forest.predict(x_test)
+
+print('Random Forest :')
+print()
+print(metrics.confusion_matrix(y_test,y_predict))
+print(metrics.classification_report(y_test,y_predict))
+print('Accuracy :', metrics.accuracy_score(y_test,y_predict))
+print()
