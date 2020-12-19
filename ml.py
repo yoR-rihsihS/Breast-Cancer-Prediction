@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 
 dataset = pd.read_csv('data.csv')
-print('Dataset dimensions :',dataset.shape)
+print('Dataset dimensions :', dataset.shape)
 print()
 print(dataset.head(10))
 print()
@@ -25,7 +25,7 @@ dataset.iloc[:,1]= labelenc.fit_transform(dataset.iloc[:,1].values)
 print(dataset.iloc[:,1].values)
 print()
 
-# plt.figure(figsize=(20,20))
+# plt.figure(figsize=(16,16))
 # sns.heatmap(dataset.corr(), annot = True, fmt='.0%')
 # plt.show()
 
@@ -52,7 +52,6 @@ logistic_model = LogisticRegression(random_state = 0)
 logistic_model.fit(x_train, y_train)
 
 y_predict = logistic_model.predict(x_test)
-# cm = metrics.confusion_matrix(y_test,y_predict)
 
 print('Logistic Regression Model :')
 print()
@@ -77,10 +76,10 @@ for n in range(1,Ks):
     y_predict = knn_model.predict(x_test)
     mean_acc[n-1] = metrics.accuracy_score(y_test, y_predict)
 
-    print(metrics.accuracy_score(y_test, y_predict))
-    print(metrics.confusion_matrix(y_test,y_predict))
+    # print(metrics.accuracy_score(y_test, y_predict))
+    # print(metrics.confusion_matrix(y_test,y_predict))
     confusionMat.append(metrics.confusion_matrix(y_test,y_predict))
-    print(metrics.classification_report(y_test,y_predict))
+    # print(metrics.classification_report(y_test,y_predict))
     classificationRpt.append(metrics.classification_report(y_test,y_predict))
 
 print('KNN Model :')
