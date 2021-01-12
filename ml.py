@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+
+
 dataset = pd.read_csv('data.csv')
 print('Dataset dimensions :', dataset.shape)
 print()
@@ -19,15 +21,20 @@ print()
 # sns.countplot(dataset['diagnosis'],label="Count")
 # plt.show()
 
+#Visualization per Pair
+sns.set(style="ticks", color_codes=True)
+sns.pairplot(dataset.iloc[:,1:11],palette=('b','r'), hue = "diagnosis", height=2.5)
+plt.show()
+
 from sklearn.preprocessing import LabelEncoder
 labelenc = LabelEncoder()
 dataset.iloc[:,1]= labelenc.fit_transform(dataset.iloc[:,1].values)
 print(dataset.iloc[:,1].values)
 print()
 
-# plt.figure(figsize=(16,16))
-# sns.heatmap(dataset.corr(), annot = True, fmt='.0%')
-# plt.show()
+plt.figure(figsize=(16,16))
+sns.heatmap(dataset.corr(), annot = True, fmt='.0%')
+plt.show()
 
 x = dataset.iloc[:,2:-1].values
 y = dataset.iloc[:,1].values
@@ -90,7 +97,7 @@ print("The best accuracy was", mean_acc.max(), "with k=", mean_acc.argmax()+1)
 
 
 
-#Using SVC linear
+#Using SVM linear
 from sklearn.svm import SVC
 from sklearn import metrics
 svc_lin = SVC(kernel = 'linear', random_state = 0)
@@ -107,7 +114,7 @@ print()
 
 
 
-#Using SVC rbf
+#Using SVM rbf
 from sklearn.svm import SVC
 from sklearn import metrics
 svc_rbf = SVC(kernel = 'rbf', random_state = 0)
